@@ -1,0 +1,15 @@
+<form action="" method="POST">
+    <table>
+        <tr>
+          <th>件名</th>
+          <td>{{ issue.summary }}</td>
+        </tr>
+        <tr>
+          <th>詳細</th>
+          <td>{{ issue.description }}</td>
+        </tr>
+    </table>
+    <p>こちらのデータを削除します。</p>
+    <button type="submit">送信</button>
+    {% csrf_token %}
+</form>

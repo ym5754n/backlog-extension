@@ -1,0 +1,11 @@
+<table>
+    <tr>
+      <th>件名</th>
+      <td>{{ issue.summary }}</td>
+    </tr>
+    <tr>
+      <th>詳細</th>
+      <!-- linebreaksbk を入れると改行タグでちゃんと改行して表示されるようになる -->
+      <td>{{ issue.description | linebreaksbr}}</td>
+    </tr>
+</table>

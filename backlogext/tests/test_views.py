@@ -69,3 +69,63 @@ class IssueCreateTests(TestCase):
         data = {}
         response = self.client.post(reverse('backlogext:issue_create'), data=data)
         self.assertEqual(response.status_code, 200)
+
+class IssueDetailTests(TestCase):
+    """IssueDetailView のテストクラス"""
+
+    def test_not_fount_pk_get(self):
+        """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        response = self.client.get(
+            reverse('backlogext:issue_detail', kwargs={'pk': 1}),
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        issue = Issue.objects.create(summary='test_summary', description='test_description')
+        response = self.client.get(
+            reverse('backlogext:issue_detail', kwargs={'pk': issue.pk}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, issue.summary)
+        self.assertContains(response, issue.description)
+
+class IssueUpdateTests(TestCase): # 追加
+    """IssueUpdateView のテストクラス"""
+
+    def test_not_fount_pk_get(self):
+        """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        response = self.client.get(
+            reverse('backlogext:issue_update', kwargs={'pk': 1}),
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        issue = Issue.objects.create(summary='test_summary', description='test_description')
+        response = self.client.get(
+            reverse('backlogext:issue_update', kwargs={'pk': issue.pk}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, issue.summary)
+        self.assertContains(response, issue.description)
+
+class IssueDeleteTests(TestCase):
+    """IssueDeleteView のテストクラス"""
+
+    def test_not_fount_pk_get(self):
+        """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        response = self.client.get(
+            reverse('backlogext:issue_delete', kwargs={'pk': 1}),
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        issue = Issue.objects.create(summary='test_summary', description='test_description')
+        response = self.client.get(
+            reverse('backlogext:issue_delete', kwargs={'pk': issue.pk}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, issue.summary)
+        self.assertContains(response, issue.description)
