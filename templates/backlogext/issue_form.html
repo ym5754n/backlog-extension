@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>{{ issue.summary }}</p>
 <form action="" method="POST">
     <table class="table">
         <tr>
@@ -12,3 +16,4 @@
     <button type="submit" class="btn btn-primary">送信</button>
     {% csrf_token %}
 </form>
+{% endblock %}

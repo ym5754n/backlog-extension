@@ -1,5 +1,6 @@
-<h1>課題一覧</h1>
+{% extends 'base.html' %}
 
+{% block content %}
 <table class="table">
     <thead>
         <tr>
@@ -10,9 +11,16 @@
     <tbody>
         {% for issue in issue_list %}
         <tr>
-            <td>{{ issue.summary }}</td>
+            <td><a href="{% url 'backlogext:issue_detail' issue.pk %}">{{ issue.summary }}</a></td>
             <td>{{ issue.description }}</td>
+            <td>
+                <a href="{% url 'backlogext:issue_update' issue.pk %}">編集</a>
+            </td>
+            <td>
+                <a href="{% url 'backlogext:issue_delete' issue.pk %}">削除</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}

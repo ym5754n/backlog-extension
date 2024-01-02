@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <table>
     <tr>
       <th>件名</th>
@@ -9,3 +12,4 @@
       <td>{{ issue.description | linebreaksbr}}</td>
     </tr>
 </table>
+{% endblock %}
