@@ -46,3 +46,26 @@ class IssueListTests(TestCase):
       """
       issue1 = Issue.objects.create(summary='summary1', description='description1')
       issue2 = Issue.objects.create(summary='summary2', description='description2')
+
+class IssueCreateTests(TestCase):
+    """IssueCreateビューのテストクラス"""
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        response = self.client.get(reverse('backlogext:issue_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_with_data(self):
+        """適当なデータでPOSTすると、成功してリダイレクトされることを確認"""
+        data = {
+            'summary': 'test_summary',
+            'description': 'test_description',
+        }
+        response = self.client.post(reverse('backlogext:issue_create'), data=data)
+        self.assertEqual(response.status_code, 302)
+    
+    def test_issue_null(self):
+        """空のデータで POST を行うとリダイレクトも無く 200 だけ返されることを確認"""
+        data = {}
+        response = self.client.post(reverse('backlogext:issue_create'), data=data)
+        self.assertEqual(response.status_code, 200)

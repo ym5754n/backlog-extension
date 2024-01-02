@@ -1,0 +1,14 @@
+<form action="" method="POST">
+    <table class="table">
+        <tr>
+            <th>件名</th>
+            <td>{{ form.summary }}</td>
+        </tr>
+        <tr>
+            <th>詳細</th>
+            <td>{{ form.description }}</td>
+        </tr>
+    </table>
+    <button type="submit" class="btn btn-primary">送信</button>
+    {% csrf_token %}
+</form>
