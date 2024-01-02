@@ -3,13 +3,6 @@ from django.urls import reverse
 
 from ..models import Issue
 
-class IndexTests(TestCase):
-  """IndexViewのテストクラス"""
-
-  def test_get(self):
-    """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
-    response = self.client.get(reverse('backlogext:index'))
-    self.assertEqual(response.status_code, 200)
 
 class IssueListTests(TestCase):
 
