@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>設定</p>
+<form action="" method="POST">
+    <table class="table">
+        <tr>
+            <th>スペース名</th>
+            <td>{{ form.space_key }}</td>
+        </tr>
+        <tr>
+            <th>プロジェクト名</th>
+            <td>{{ form.project_key }}</td>
+        </tr>
+        <tr>
+            <th>プロジェクトID</th>
+            <td>{{ form.project_id }}</td>
+        </tr>
+        <tr>
+            <th>client id</th>
+            <td>{{ form.client_id }}</td>
+        </tr>
+        <tr>
+            <th>client secret</th>
+            <td>{{ form.client_secret }}</td>
+        </tr>
+    </table>
+    <button type="submit" class="btn btn-primary">送信</button>
+    {% csrf_token %}
+</form>
+{% endblock %}

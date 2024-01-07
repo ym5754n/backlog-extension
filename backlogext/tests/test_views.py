@@ -1,26 +1,29 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from ..models import Issue
+from backlogext.models import Issue, Setting
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class IssueListTests(TestCase):
+  """IssueListビューのテストクラス"""
 
   def setUp(self):
-    """
-    テスト環境の準備用メソッド。名前は必ず「setUp」とすること。
-    同じテストクラス内で共通で使いたいデータがある場合にここで作成する。
-    """
-    issue1 = Issue.objects.create(summary='summary1', description='description1')
-    issue2 = Issue.objects.create(summary='summary2', description='description2')
+    self.user = User.objects.create(username='test_user', password='1234')
+
+    issue1 = Issue.objects.create(summary='summary1', description='description1', user=self.user)
+    issue2 = Issue.objects.create(summary='summary2', description='description2', user=self.user)
 
   def test_get(self):
     """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+    self.client.force_login(self.user)
     response = self.client.get(reverse('backlogext:issue_list'))
     self.assertEqual(response.status_code, 200)
   
   def test_get_2issues_by_list(self):
     """GET でアクセス時に、setUp メソッドで追加した 2件追加が返されることを確認"""
+    self.client.force_login(self.user)
     response = self.client.get(reverse('backlogext:issue_list'))
     self.assertEqual(response.status_code, 200)
     self.assertQuerysetEqual(
@@ -33,23 +36,24 @@ class IssueListTests(TestCase):
     self.assertContains(response, 'summary2') # html 内に issue2 の summary が含まれていることを確認
 
   def tearDown(self):
-      """
-      setUp で追加したデータを消す、掃除用メソッド。
-      create とはなっているがメソッド名を「tearDown」とすることで setUp と逆の処理を行ってくれる＝消してくれる。
-      """
       issue1 = Issue.objects.create(summary='summary1', description='description1')
       issue2 = Issue.objects.create(summary='summary2', description='description2')
 
 class IssueCreateTests(TestCase):
     """IssueCreateビューのテストクラス"""
 
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
+
     def test_get(self):
         """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
         response = self.client.get(reverse('backlogext:issue_create'))
         self.assertEqual(response.status_code, 200)
 
     def test_post_with_data(self):
         """適当なデータでPOSTすると、成功してリダイレクトされることを確認"""
+        self.client.force_login(self.user)
         data = {
             'summary': 'test_summary',
             'description': 'test_description',
@@ -59,6 +63,7 @@ class IssueCreateTests(TestCase):
     
     def test_issue_null(self):
         """空のデータで POST を行うとリダイレクトも無く 200 だけ返されることを確認"""
+        self.client.force_login(self.user)
         data = {}
         response = self.client.post(reverse('backlogext:issue_create'), data=data)
         self.assertEqual(response.status_code, 200)
@@ -66,8 +71,12 @@ class IssueCreateTests(TestCase):
 class IssueDetailTests(TestCase):
     """IssueDetailView のテストクラス"""
 
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
+
     def test_not_fount_pk_get(self):
         """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse('backlogext:issue_detail', kwargs={'pk': 1}),
         )
@@ -75,6 +84,7 @@ class IssueDetailTests(TestCase):
 
     def test_get(self):
         """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
         issue = Issue.objects.create(summary='test_summary', description='test_description')
         response = self.client.get(
             reverse('backlogext:issue_detail', kwargs={'pk': issue.pk}),
@@ -83,11 +93,15 @@ class IssueDetailTests(TestCase):
         self.assertContains(response, issue.summary)
         self.assertContains(response, issue.description)
 
-class IssueUpdateTests(TestCase): # 追加
+class IssueUpdateTests(TestCase):
     """IssueUpdateView のテストクラス"""
+
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
 
     def test_not_fount_pk_get(self):
         """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse('backlogext:issue_update', kwargs={'pk': 1}),
         )
@@ -95,6 +109,7 @@ class IssueUpdateTests(TestCase): # 追加
 
     def test_get(self):
         """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
         issue = Issue.objects.create(summary='test_summary', description='test_description')
         response = self.client.get(
             reverse('backlogext:issue_update', kwargs={'pk': issue.pk}),
@@ -106,8 +121,12 @@ class IssueUpdateTests(TestCase): # 追加
 class IssueDeleteTests(TestCase):
     """IssueDeleteView のテストクラス"""
 
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
+
     def test_not_fount_pk_get(self):
         """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse('backlogext:issue_delete', kwargs={'pk': 1}),
         )
@@ -115,6 +134,7 @@ class IssueDeleteTests(TestCase):
 
     def test_get(self):
         """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
         issue = Issue.objects.create(summary='test_summary', description='test_description')
         response = self.client.get(
             reverse('backlogext:issue_delete', kwargs={'pk': issue.pk}),
@@ -122,3 +142,47 @@ class IssueDeleteTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, issue.summary)
         self.assertContains(response, issue.description)
+
+class SettingCreateTests(TestCase):
+    """SettingCreate のテストクラス"""
+
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('backlogext:setting_create'))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_issue_null(self):
+        """空のデータで POST を行うとリダイレクトも無く 200 だけ返されることを確認"""
+        self.client.force_login(self.user)
+        data = {}
+        response = self.client.post(reverse('backlogext:setting_create'), data=data)
+        self.assertEqual(response.status_code, 200)
+
+class SettingUpdateTests(TestCase):
+    """SettingUpdateView のテストクラス"""
+
+    def setUp(self):
+        self.user = User.objects.create(username='test_user', password='1234')
+
+    def test_not_fount_pk_get(self):
+        """課題を登録せず、空の状態で存在しない課題のプライマリキーでアクセスした時に 404 が返されることを確認"""
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('backlogext:setting_update', kwargs={'pk': 1}),
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get(self):
+        """GET メソッドでアクセスしてステータスコード200を返されることを確認"""
+        self.client.force_login(self.user)
+        setting = Setting.objects.create(space_key='test_space_key', project_key='test_project_key')
+        response = self.client.get(
+            reverse('backlogext:setting_update', kwargs={'pk': setting.pk}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, setting.space_key)
+        self.assertContains(response, setting.project_key)

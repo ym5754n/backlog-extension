@@ -4,6 +4,8 @@
 <table class="table">
     <thead>
         <tr>
+            <th>backlogに追加</th>
+            <th>ID</th>
             <th>件名</th>
             <th>詳細</th>
         </tr>
@@ -11,6 +13,31 @@
     <tbody>
         {% for issue in issue_list %}
         <tr>
+            <td>
+                {% if issue.key_id %}                    
+                    <form action="../issues" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="追加済" disabled>
+                    </form>
+                {% else %}
+                    <form action="{% url 'backlogext:create_issue' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="pk" value="{{ issue.pk }}">
+                        <input type="hidden" name="projectId" value="{{ setting.project_id }}">
+                        <input type="hidden" name="summary" value="{{ issue.summary }}">
+                        <input type="hidden" name="issueTypeId" value="1048454">
+                        <input type="hidden" name="priorityId" value="1">
+                        <input type="submit" value="追加">
+                    </form>
+                {% endif %}
+            </td>
+            <td>
+                {% if issue.key_id %}
+                    <a href="http://{{ setting.space_key }}.backlog.jp/view/{{ setting.project_key }}-{{ issue.key_id }}" target="_blank">
+                        {{ setting.project_key }}-{{ issue.key_id }}
+                    </a>
+                {% endif %}
+            </td>
             <td><a href="{% url 'backlogext:issue_detail' issue.pk %}">{{ issue.summary }}</a></td>
             <td>{{ issue.description }}</td>
             <td>

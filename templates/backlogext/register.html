@@ -1,0 +1,17 @@
+<h1>Register</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <div>
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username" required>
+    </div>
+    <div>
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password" required>
+    </div>
+    <div>
+        <input type="submit" value="register">
+    </div>
+</form>
