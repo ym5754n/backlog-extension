@@ -37,6 +37,8 @@ $ docker exec -it app-web-1 sh
 $ python manage.py migrate
 ```
 
+OAuth2を利用してAPI連携しているため、Backlog上でアプリケーション登録を行う必要があります。[こちら](https://backlog.com/developer/applications/oauth2Clients)からBacklogアプリケーション登録を行ってください。その際、Redirect URIには`http://localhost:8000/authenticate_success`を指定してください。
+
 ## Author
 - 作成者: ym5754n
 - E-mail: ym5754n@gmail.com
