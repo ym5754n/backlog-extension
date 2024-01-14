@@ -23,9 +23,9 @@
                     <form action="{% url 'backlogext:create_issue' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="pk" value="{{ issue.pk }}">
-                        <input type="hidden" name="projectId" value="{{ setting.project_id }}">
+                        <input type="hidden" name="projectId" value="{{ issue.project_id }}">
                         <input type="hidden" name="summary" value="{{ issue.summary }}">
-                        <input type="hidden" name="issueTypeId" value="1048454">
+                        <input type="hidden" name="issueTypeId" value="{{ issue.type_id }}">
                         <input type="hidden" name="priorityId" value="1">
                         <input type="submit" value="追加">
                     </form>
@@ -36,6 +36,8 @@
                     <a href="http://{{ setting.space_key }}.{{ setting.domain }}/view/{{ setting.project_key }}-{{ issue.key_id }}" target="_blank">
                         {{ issue.project_key }}-{{ issue.key_id }}
                     </a>
+                {% else %}
+                    {{ issue.project_key }}-xx
                 {% endif %}
             </td>
             <td><a href="{% url 'backlogext:issue_detail' issue.pk %}">{{ issue.summary }}</a></td>

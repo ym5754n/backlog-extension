@@ -9,6 +9,17 @@ from backlogext.src.util import Util
 class IssueListView(generic.ListView):
     """課題一覧ページ"""
     template_name = 'backlogext/issue_list.html'
+
+    # settingを追加
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        try:
+            ctx['setting'] = Setting.objects.get(user=self.request.user.id)
+        except Setting.DoesNotExist:
+            ctx['setting'] = None
+            print('no setting')
+        
+        return ctx
     
     # ユーザに紐づくissueを表示
     def get_queryset(self):
@@ -26,12 +37,13 @@ class IssueCreateView(generic.CreateView):
     form_class = IssueCreateForm
     success_url = reverse_lazy('backlogext:issue_list')
 
-    # user, project_keyを追加
+    # user, project_key, project_idを追加
     def form_valid(self, form):
         setting = Setting.objects.get(user=self.request.user.id)
         q = form.save(commit=False)
         q.user = self.request.user
         q.project_key = setting.project_key
+        q.project_id = setting.project_id
         q.save()
         return super().form_valid(form)
     

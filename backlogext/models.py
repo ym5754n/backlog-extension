@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 class Issue(models.Model):
     key_id = models.IntegerField('課題キー', blank=True, null=True)
     type_id = models.IntegerField('課題種別キー', blank=True, null=True)
+    project_id = models.IntegerField('project id', blank=True, null=True)
     project_key = models.CharField('project key', max_length=255, blank=True, null=True)
     summary = models.CharField('件名', max_length=255)
     description = models.TextField('詳細')
