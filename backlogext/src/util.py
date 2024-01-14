@@ -3,11 +3,11 @@ from ..models import Setting, Token
 class Util:
     def __init__(self, user):
         self.setting = Setting.objects.get(user=user)
-        self.token = Token.objects.get(user=user)
         self.base_url = f'https://{self.setting.space_key}.{self.setting.domain}/api/v2/'    
 
-    def get_headers(self):
+    def get_headers(self, user):
         """APIリクエストに必要なヘッダーを取得する"""
+        self.token = Token.objects.get(user=user)
         return {
             'Authorization': 'Bearer {}'.format(self.token.access_token)
         }

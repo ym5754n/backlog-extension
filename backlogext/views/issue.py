@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from backlogext.models import Issue, Setting
@@ -37,6 +39,22 @@ class IssueCreateView(generic.CreateView):
     form_class = IssueCreateForm
     success_url = reverse_lazy('backlogext:issue_list')
 
+    # settingが存在しない場合、issue_listにリダイレクトする
+    def get(self, request, *args, **kwargs):
+
+        try:
+            setting = Setting.objects.get(user=self.request.user.id)
+        except Setting.DoesNotExist:
+            messages.info(request, f'はじめに｢設定｣をしてください')
+            return redirect('/issue_list')
+        
+        # 認可コードが存在しない場合、認可コードを取得する
+        util = Util(self.request.user)
+        if not setting.code:
+            return redirect(util.get_authentication_code_url())
+            
+        return super().get(request, *args, **kwargs)
+
     # user, project_key, project_idを追加
     def form_valid(self, form):
         setting = Setting.objects.get(user=self.request.user.id)
@@ -53,7 +71,7 @@ class IssueCreateView(generic.CreateView):
         user = self.request.user
         api = Api(user)
         util = Util(user)
-        self.header = util.get_headers()
+        self.header = util.get_headers(user)
         self.issue_types = api.get_issue_types(self.header)
         type_choices = [(issue_type['id'], issue_type['name']) for issue_type in self.issue_types]
         kwargs['type_choices'] = type_choices
@@ -78,7 +96,7 @@ class IssueUpdateView(generic.UpdateView):
         user = self.request.user
         api = Api(user)
         util = Util(user)
-        self.header = util.get_headers()
+        self.header = util.get_headers(user)
         self.issue_types = api.get_issue_types(self.header)
         type_choices = [(issue_type['id'], issue_type['name']) for issue_type in self.issue_types]
         kwargs['type_choices'] = type_choices

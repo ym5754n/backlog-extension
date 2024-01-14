@@ -12,7 +12,7 @@ def authenticate_success(request):
     api = Api(request.user)
 
     db.update_setting_code(request.GET['code'], request.user)
-    jsonData = api.create_token()
+    jsonData = api.create_token(request.GET['code'])
     db.update_token(jsonData, request.user)
 
     messages.info(request, f'backlogとの連携が完了しました。再度｢追加｣を実行してください')
@@ -35,7 +35,7 @@ def create_issue(request):
         return redirect(util.get_authentication_code_url())
 
     # 課題追加をbacklogにリクエストする
-    header = util.get_headers()
+    header = util.get_headers(request.user)
     body = {
         'projectId': request.POST['projectId'],
         'summary': request.POST['summary'],
