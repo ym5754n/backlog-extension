@@ -14,6 +14,14 @@ class Api:
 
         print("response", jsonData)
         return jsonData
+    
+    def get(self, url, headers=None):
+        """GETでAPIリクエストを実行する"""
+        r = requests.get(url, headers=headers)
+        jsonData = r.json()
+
+        print("response", jsonData)
+        return jsonData
 
     def create_issue(self, header, data):
         """課題の追加 /api/v2/issues"""
@@ -50,3 +58,10 @@ class Api:
 
         print("request", data)
         return self.post(url, data)
+    
+    def get_issue_types(self, header):
+        """プロジェクトに登録されている種別の一覧を取得する /api/v2/projects/:projectIdOrKey/issueTypes"""
+        url = self.base_url + f'projects/{self.setting.project_id}/issueTypes'
+
+        print("request", url)
+        return self.get(url, header)

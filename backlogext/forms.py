@@ -6,9 +6,15 @@ from .models import Issue, Setting
 User = get_user_model()
 
 class IssueCreateForm(forms.ModelForm):
+    type_id = forms.ChoiceField()
+
+    def __init__(self, type_choices=None, *args, **kwargs):
+        self.base_fields['type_id'].choices = type_choices
+        super(IssueCreateForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Issue
-        fields = ('summary', 'description')
+        fields = ('type_id', 'summary', 'description')
 
 class SettingCreateForm(forms.ModelForm):
     class Meta:

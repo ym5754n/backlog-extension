@@ -1,8 +1,9 @@
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from backlogext.models import Issue, Setting
 from backlogext.forms import IssueCreateForm
+from backlogext.src.api import Api
+from backlogext.src.util import Util
 
 
 class IssueListView(generic.ListView):
@@ -42,6 +43,19 @@ class IssueCreateView(generic.CreateView):
         q.user = self.request.user
         q.save()
         return super().form_valid(form)
+    
+    def get_form_kwargs(self):
+        kwargs = super(IssueCreateView, self).get_form_kwargs()
+
+        user = self.request.user
+        api = Api(user)
+        util = Util(user)
+        self.header = util.get_headers()
+        self.issue_types = api.get_issue_types(self.header)
+        type_choices = [(issue_type['id'], issue_type['name']) for issue_type in self.issue_types]
+        kwargs['type_choices'] = type_choices
+
+        return kwargs
 
 class IssueDetailView(generic.DetailView):
     """課題詳細ページ"""
@@ -54,6 +68,19 @@ class IssueUpdateView(generic.UpdateView):
     model = Issue
     form_class = IssueCreateForm
     success_url = reverse_lazy('backlogext:issue_list')
+
+    def get_form_kwargs(self):
+        kwargs = super(IssueUpdateView, self).get_form_kwargs()
+
+        user = self.request.user
+        api = Api(user)
+        util = Util(user)
+        self.header = util.get_headers()
+        self.issue_types = api.get_issue_types(self.header)
+        type_choices = [(issue_type['id'], issue_type['name']) for issue_type in self.issue_types]
+        kwargs['type_choices'] = type_choices
+
+        return kwargs
 
 class IssueDeleteView(generic.DeleteView):
     """課題削除ページ"""
