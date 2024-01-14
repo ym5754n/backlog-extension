@@ -1,7 +1,7 @@
 import requests
 from ..models import Setting, Token
 
-class BacklogApi:
+class Api:
     def __init__(self, user):
         self.setting = Setting.objects.get(user=user)
         self.token = Token.objects.get(user=user)
