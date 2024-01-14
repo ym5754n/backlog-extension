@@ -5,7 +5,7 @@ class BacklogApi:
     def __init__(self, user):
         self.setting = Setting.objects.get(user=user)
         self.token = Token.objects.get(user=user)
-        self.base_url = f'https://{self.setting.space_key}.backlog.jp/api/v2/'
+        self.base_url = f'https://{self.setting.space_key}.{self.setting.domain}/api/v2/'
 
     def post(self, url, data, headers=None):
         """POSTでAPIリクエストを実行する"""

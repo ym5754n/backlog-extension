@@ -13,7 +13,14 @@ class IssueCreateForm(forms.ModelForm):
 class SettingCreateForm(forms.ModelForm):
     class Meta:
         model = Setting
-        fields = ('space_key', 'project_key', 'project_id', 'client_id', 'client_secret')
+        fields = ('space_key', 'domain', 'project_key', 'project_id', 'client_id', 'client_secret')
+        DOMAIN_CHOICES = (
+            ('backlog.jp', 'backlog.jp'),
+            ('backlog.com', 'backlog.com'),
+        )
+        widgets = {
+            'domain': forms.Select(choices=DOMAIN_CHOICES, attrs={'class': 'form-control'})
+        }
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

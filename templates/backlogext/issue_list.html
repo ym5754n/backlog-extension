@@ -33,7 +33,7 @@
             </td>
             <td>
                 {% if issue.key_id %}
-                    <a href="http://{{ setting.space_key }}.backlog.jp/view/{{ setting.project_key }}-{{ issue.key_id }}" target="_blank">
+                    <a href="http://{{ setting.space_key }}.{{ setting.domain }}/view/{{ setting.project_key }}-{{ issue.key_id }}" target="_blank">
                         {{ setting.project_key }}-{{ issue.key_id }}
                     </a>
                 {% endif %}

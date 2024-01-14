@@ -23,6 +23,7 @@ class Token(models.Model):
     
 class Setting(models.Model):
     space_key = models.CharField('space key', max_length=255)
+    domain = models.CharField('domain', max_length=255, blank=True, null=True)
     project_key = models.CharField('project key', max_length=255)
     project_id = models.IntegerField('project id', blank=True, null=True)
     code = models.CharField('code', max_length=255, blank=True, null=True)
