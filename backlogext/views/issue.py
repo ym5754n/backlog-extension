@@ -26,10 +26,12 @@ class IssueCreateView(generic.CreateView):
     form_class = IssueCreateForm
     success_url = reverse_lazy('backlogext:issue_list')
 
-    # userを追加
+    # user, project_keyを追加
     def form_valid(self, form):
+        setting = Setting.objects.get(user=self.request.user.id)
         q = form.save(commit=False)
         q.user = self.request.user
+        q.project_key = setting.project_key
         q.save()
         return super().form_valid(form)
     
