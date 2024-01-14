@@ -17,16 +17,15 @@ class IssueCreateForm(forms.ModelForm):
         fields = ('type_id', 'summary', 'description')
 
 class SettingCreateForm(forms.ModelForm):
+    domain = forms.ChoiceField()
+
+    def __init__(self, domain_choices=None, *args, **kwargs):
+        self.base_fields['domain'].choices = domain_choices
+        super(SettingCreateForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Setting
         fields = ('space_key', 'domain', 'project_key', 'project_id', 'client_id', 'client_secret')
-        DOMAIN_CHOICES = (
-            ('backlog.jp', 'backlog.jp'),
-            ('backlog.com', 'backlog.com'),
-        )
-        widgets = {
-            'domain': forms.Select(choices=DOMAIN_CHOICES, attrs={'class': 'form-control'})
-        }
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

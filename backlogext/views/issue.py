@@ -9,17 +9,6 @@ from backlogext.src.util import Util
 class IssueListView(generic.ListView):
     """課題一覧ページ"""
     template_name = 'backlogext/issue_list.html'
-
-    # settingを追加
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        try:
-            ctx['setting'] = Setting.objects.get(user=self.request.user.id)
-        except Setting.DoesNotExist:
-            ctx['setting'] = None
-            print('no setting')
-        
-        return ctx
     
     # ユーザに紐づくissueを表示
     def get_queryset(self):
