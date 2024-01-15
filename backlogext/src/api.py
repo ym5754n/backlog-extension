@@ -3,6 +3,7 @@ from ..models import Setting, Token
 
 class Api:
     def __init__(self, user):
+        self.user = user
         self.setting = Setting.objects.get(user=user)
         self.base_url = f'https://{self.setting.space_key}.{self.setting.domain}/api/v2/'
 
@@ -32,13 +33,13 @@ class Api:
     def refresh_token(self):
         """アクセストークンの更新 /api/v2/oauth2/token"""
         url = self.base_url + 'oauth2/token'
-        token = Token.objects.get(user=self.request.user)
+        token = Token.objects.get(user=self.user)
 
         data = {
             'grant_type': 'refresh_token',
             'client_id': self.setting.client_id,
             'client_secret': self.setting.client_secret,
-            'refresh_token': self.token.refresh_token,
+            'refresh_token': token.refresh_token,
         }
 
         print("request", data)
