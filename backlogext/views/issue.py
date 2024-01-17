@@ -39,18 +39,17 @@ class IssueCreateView(generic.CreateView):
     form_class = IssueCreateForm
     success_url = reverse_lazy('backlogext:issue_list')
 
-    # settingが存在しない場合、issue_listにリダイレクトする
+    # settingが存在しない場合、setting_createにリダイレクトする
     def get(self, request, *args, **kwargs):
-
         try:
             setting = Setting.objects.get(user=self.request.user.id)
         except Setting.DoesNotExist:
-            messages.info(request, f'はじめに｢設定｣をしてください')
-            return redirect('/issue_list')
+            messages.info(request, f'はじめに設定をしてください')
+            return redirect('/setting_create')
         
         # 認可コードが存在しない場合、認可コードを取得する
-        util = Util(self.request.user)
         if not setting.code:
+            util = Util(self.request.user)
             return redirect(util.get_authentication_code_url())
             
         return super().get(request, *args, **kwargs)
